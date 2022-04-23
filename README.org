@@ -1,0 +1,69 @@
+#+title: Throws README
+#+date: <2022-04-23 Sat>
+#+author: William Clifford
+#+email: will@wobh.org
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+
+* Introduction
+
+Provides an interface for iteratives on collections.
+
+- ~inject~ :: a general reduction or fold
+- ~biject~ :: a general mapping
+- ~reject~ :: a general filter
+
+Currently just implemented for sequence types, but eventurally, one
+should be able to implement ~inject~ for a collection and the others
+will work.
+
+* Purpose
+
+This is here shared with the idea that some might find it useful for
+personal experiments and toys--that's all I'm using it for. It might
+also be cautionarily if not pedagogically useful. All that said, it
+should not be expected to have any desireable characteristics or be
+useful in any way.
+
+Non-personal use (for example, commercial) is forbidden.
+
+Non-casual personal use is strongly discouraged.
+
+Really, the main purpose here is simply a self-demonstration of module
+making that I can reuse for making more complex projects.
+
+Checkout the TODO document for future plans and experiment ideas.
+
+* Instructions
+
+To use:
+
+1. Clone repository
+2. Run ~make install~ this will install it into
+   ~${XDG_DATA_HOME}/common-lisp/source/org.wobh.common-lisp.tools.throws~
+3. in REPL ~(require :asdf)~ (as needed)
+4. ~(require :org.wobh.common-lisp.tools.throws)~
+
+The test package is simply Lisp assertions and loads with the rest of
+the system. If the system loads without errors all the tests passed.
+
+The package defines a nickname of ~throws~ for convenience.
+
+Example usage:
+
+#+begin_example
+CL-USER> (throws:inject #'+ '(0 1 2 3 4 5))
+15
+CL-USER> (throws:biject #'1+ '(0 1 2 3 4 5)
+(1 2 3 4 5 6)
+CL-USER> (throws:reject #'evenp '(0 1 2 3 4 5))
+(0 2 4)
+#+end_example
+
+* COMMENT org settings
+#+options: ':nil *:t -:t ::t <:t H:6 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t

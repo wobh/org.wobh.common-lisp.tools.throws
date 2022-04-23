@@ -1,0 +1,10 @@
+#+title: Throws TODO
+#+date: <2022-04-23 Sat>
+#+author: William Clifford
+#+email: will@wobh.org
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+
+* TODO support throws on hash tables
+* TODO support injection-based protocols
