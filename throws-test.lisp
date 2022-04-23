@@ -27,6 +27,20 @@ Tests for the throws package"))
                                     subject
                                     :initial-value a-stream)))))
 
+(let ((subject (let ((a-hash-table (make-hash-table)))
+                 (setf (gethash :foo a-hash-table) 1)
+                 (setf (gethash :bar a-hash-table) 2)
+                 (setf (gethash :baz a-hash-table) 3)
+                 a-hash-table))
+      (expect 6))
+  (assert (= expect
+             (throws:inject (lambda (acc elt)
+                              (destructuring-bind (a-key a-value) elt
+                                (declare (ignorable a-key))
+                                (+ acc a-value)))
+                            subject
+                            :initial-value 0))))
+
 
 ;;; Test throws:biject
 
@@ -39,6 +53,19 @@ Tests for the throws package"))
       (expect #(1 2 3 4 5 6)))
   (assert (equalp expect
                   (throws:biject #'1+ subject))))
+
+(let ((subject (let ((a-hash-table (make-hash-table)))
+                 (setf (gethash :foo a-hash-table) 1)
+                 (setf (gethash :bar a-hash-table) 2)
+                 (setf (gethash :baz a-hash-table) 3)
+                 a-hash-table))
+      (expect 6))
+  (assert (= expect
+             (throws:inject (lambda (acc elt)
+                              (destructuring-bind (morep key value) elt
+                                (declare (ignorable morep key))
+                                (+ acc value)))
+                            subject))))
 
 
 ;;; Test throws:reject
@@ -53,3 +80,18 @@ Tests for the throws package"))
   (assert (equalp expect
                  (throws:reject #'evenp subject))))
 
+(let ((subject (let ((a-hash-table (make-hash-table)))
+                 (setf (gethash :foo a-hash-table) 0)
+                 (setf (gethash :bar a-hash-table) 1)
+                 (setf (gethash :baz a-hash-table) 2)
+                 (setf (gethash :qux a-hash-table) 3)
+                 (setf (gethash :zot a-hash-table) 4)
+                 (setf (gethash :wat a-hash-table) 5)
+                 a-hash-table))
+      (expect '(0 2 4)))
+  (assert (equal expect
+                 (loop
+                   for a-value being each hash-value
+                     of (throws:reject #'evenp subject)
+                   collect a-value into out
+                   finally (return (sort out #'<))))))
