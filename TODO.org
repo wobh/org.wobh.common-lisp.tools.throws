@@ -6,5 +6,61 @@
 #+select_tags: export
 #+exclude_tags: noexport
 
+* TODO write documentation
 * TODO support throws on hash tables
+
+If the order matters, a sequence with the desired order should be
+created and that sequence then treated, "thrown" if you will.
+
+Does the function argument need to handle both key and value (it's not
+like regular sequence elements treat the value and it's index)?
 * TODO support injection-based protocols
+
+Two ways to go:
+
+1. ~:initial-value ()~
+2. ~:initial-value (make-instance (class-of #1))~
+
+With #1 we have to rely on a last step which can construct the
+collection from a list, some well-known interface of
+~make-instance~. for example:
+
+#+begin_src lisp
+  (defmethod biject ((a-function function) (a-collection t) &key &allow-other-keys)
+    (flet ((bijection (acc elt)
+	     (push (funcall a-function elt)
+		   acc)))
+      (make-instance (class-of a-collection)
+		     (inject bijection a-collection))))
+
+  (defmethod reject ((a-function function) (a-collection t) &key &allow-other-keys)
+    (flet ((rejection (acc elt)
+	     (let ((rejectp (funcall a-function elt)))
+	       (unless rejectp
+		 (push elt acc)))))
+      (make-instance (class-of a-collection)
+		     (inject rejection a-collection))))
+#+end_src
+
+With #2 we have to rely on a well-known interface for storing values
+in the collection.
+
+#+begin_src lisp
+  (defmethod biject ((a-function function) (a-collection t) &key &allow-other-keys)
+    (flet ((bijection (acc elt)
+	     (storef (funcall a-function elt)
+		     acc)))
+      (inject bijection
+	      a-collection
+	      :initial-value (make-instance (class-of a-collection)))))
+
+  (defmethod reject ((a-function function) (a-collection t) &key &allow-other-keys)
+    (flet ((rejection (acc elt)
+	     (let ((rejectp (funcall a-function elt)))
+	       (unless rejectp
+		 (storef elt acc)))))
+      (inject rejection
+	      a-collection
+	      :initial-value (make-instance (class-of a-collection)))))
+#+end_src
+
