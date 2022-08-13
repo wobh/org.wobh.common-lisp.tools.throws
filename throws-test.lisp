@@ -44,12 +44,12 @@ Tests for the throws package"))
 ;;; Test throws:reject
 
 (let ((subject '(0 1 2 3 4 5))
-      (expect '(0 2 4)))
+      (expect '(1 3 5)))
   (assert (equal expect
                  (throws:reject #'evenp subject))))
 
 (let ((subject #(0 1 2 3 4 5))
-      (expect #(0 2 4)))
+      (expect #(1 3 5)))
   (assert (equalp expect
                  (throws:reject #'evenp subject))))
 

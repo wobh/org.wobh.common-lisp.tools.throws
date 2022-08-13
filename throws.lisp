@@ -37,7 +37,7 @@ Package of iteratives."))
 (defgeneric reject (a-function a-collection &key &allow-other-keys)
   (:method ((a-function function) (a-collection sequence)
             &key from-end start end count key &allow-other-keys)
-    (apply #'remove-if-not
+    (apply #'remove-if
            a-function
            a-collection
            (reduce (lambda (kwargs kwpair)
